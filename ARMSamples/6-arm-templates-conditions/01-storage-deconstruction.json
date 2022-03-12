@@ -1,0 +1,38 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "storageAccountName": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        /*
+        if(condition, whatToDoIfTrue, whatToDoIfFalse) || conditionTrue = whatToDoIfTrue  or conditionFalse = whatToDoIfFalse
+        
+
+        not() | True or False
+            empty() | True or False
+                parameter('storageAccountName') 
+        
+        */
+
+        //                         <------------------condition--------------->     whatToReturnIfTrue           whatToReturnIfFalse
+        "storageAccountName": "[if(not(empty(parameters('storageAccountName'))), parameters('storageAccountName'), 'storage')]"
+    },
+    "resources": [
+        {
+            "condition": "[not(empty(parameters('storageAccountName')))]", // This resource will not be deployed unless the condition evaluates to "True".
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-06-01",
+            "name": "[variables('storageAccountName')]", // The if() function in the variable block was evaluated and the result is passed into the "storageAccountName" variable and then used for "name".
+            "location": "[resourceGroup().location]",
+            "kind": "StorageV2",
+            "sku": {
+                "name": "Standard_LRS"
+            }
+        }
+    ],
+    "outputs": {},
+    "functions": []
+}
